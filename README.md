@@ -24,6 +24,7 @@ sh install.sh "/dev/sda"
 I've included a [`post-install.sh`](https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh), which you can use to setup the final bits after you've booted your Arch USB stick.
 
 ```
+pacman -S wget
 wget https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh
 sh post-install.sh
 ```
