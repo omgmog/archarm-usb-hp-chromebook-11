@@ -15,7 +15,7 @@ log "Creating volumes on ${TARGET}"
 umount ${TARGET}*
 parted ${TARGET} mklabel gpt
 cgpt create -z ${TARGET}
-cgpt create /dev/sda
+cgpt create ${TARGET}
 cgpt add -i 1 -t kernel -b 8192 -s 32768 -l U-Boot -S 1 -T 5 -P 10 ${TARGET}
 cgpt add -i 2 -t data -b 40960 -s 32768 -l Kernel ${TARGET}
 cgpt add -i 12 -t data -b 73728 -s 32768 -l Script ${TARGET}
