@@ -3,7 +3,7 @@ REPOPATH="https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/"
 
 # Update pacman and install some important things
 pacman -Syy
-pacman -S mate xorg-server xorg-xinit xorg-server-utils xterm wget alsa-utils xf86-video-armsoc-chromium
+pacman -S mate xorg-server xorg-xinit xorg-server-utils xterm alsa-utils xf86-video-armsoc-chromium
 echo "exec mame-session" > ~/.xinitrc
 
 # Add xorg.conf entries for screen and touchpad
