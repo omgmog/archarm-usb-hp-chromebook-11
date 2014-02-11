@@ -14,12 +14,39 @@ A write-up of the process can be found on [my blog](http://blog.omgmog.net/post/
 
 - Enabled developer mode
 - Enabled booting from USB devices
+- A USB stick (2GB should be fine)
 
 ## To use this script:
 
 ```
+wget https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
 sh install.sh "/dev/sda"
 ```
+
+After you've made a USB stick and booted from it, you can download and run the `install.sh` again and install to `/dev/mmcblk0` (the eMMC) for a much nicer/faster Arch experience.
+
+```
+wget https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
+sh install.sh "/dev/mmcblk0"
+```
+Regarding the modification of the PKGBUILD for `trousers`:
+
+This is the only package you need to modify. When prompted, press `y` to edit, open in `nano` or your preferred text editor, find the line that reads:
+
+```
+arch=('i686' 'x86_64')
+```
+
+and replace it with
+
+```
+arch=('armv7h')
+```
+
+You can then build and install `trousers` and `vboot-utils` with no problem.
+
+
+## Post-install
 
 I've included a [`post-install.sh`](https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh), which you can use to setup the final bits after you've booted your Arch USB stick.
 
@@ -29,21 +56,7 @@ wget https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/post-ins
 sh post-install.sh
 ```
 
-## Using Chromium as root
-Can't be bothered to make a new user, and want to run everything as `root`? Well Chromium doesn't like that, but we can fix this. First, install `hexedit` and `chromium`:
-
+This will install the following packages:
 ```
-pacman -S hexedit chromium
+mate mate-extra xorg-server xorg-xinit xorg-server-utils xterm alsa-utils xf86-video-armsoc-chromium xf86-input-synaptics lightdm lightdm-gtk2-greeter
 ```
-
-Then simply do the following:
-
-```
-hexedit /usr/lib/chromium/chromium
-```
-
-- Press `tab`
-- Press `ctrl` + `s`, type `geteuid` and change the match to `getppid`
-- Press `ctrl` + `x`, then `y`
-
-Now Chromium will run as root.
