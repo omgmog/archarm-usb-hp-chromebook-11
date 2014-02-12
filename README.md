@@ -16,7 +16,9 @@ A write-up of the process can be found on [my blog](http://blog.omgmog.net/post/
 - Enabled booting from USB devices
 - A USB stick (2GB should be fine)
 
-## To use this script:
+## To use this script
+
+On your Chromebook with Developer Mode enabled:
 
 ```
 wget https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
