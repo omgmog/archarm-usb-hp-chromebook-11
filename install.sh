@@ -5,10 +5,12 @@ log() {
     printf "\n\033[32m$*\033[00m\n"
     read -p "Press [enter] to continue." KEY
 }
-DEVICE=${1:-"/dev/sda"}
 EMMC="/dev/mmcblk0"
+DEFAULT_USB="/dev/sda"
+DEVICE=${1:-$DEFAULT_USB}
+
 PARTITION_PREFIX=""
-if [ $DEVICE == $EMMC ]; then
+if [ $DEVICE = $EMMC ]; then
     PARTITION_PREFIX="p"
 fi
 
@@ -72,7 +74,7 @@ log "Copying over devkeys (to generate kernel later)"
 mkdir -p /tmp/root/usr/share/vboot/devkeys
 cp -r /usr/share/vboot/devkeys/ /tmp/root/usr/share/vboot/
 
-if [ $DEVICE == $EMMC ]; then
+if [ $DEVICE = $EMMC ]; then
     pacman -S wget yaourt devtools-alarm base-devel git libyaml parted dosfstools
     yaourt -Syy
     log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
