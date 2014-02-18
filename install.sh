@@ -1,23 +1,24 @@
 #!/bin/bash
-set -e
 
 log() {
     printf "\n\033[32m$*\033[00m\n"
     read -p "Press [enter] to continue." KEY
 }
+
 EMMC="/dev/mmcblk0"
 DEFAULT_USB="/dev/sda"
 DEVICE=${1:-$DEFAULT_USB}
 
-PARTITION_PREFIX=""
-if [ $DEVICE = $EMMC ]; then
-    PARTITION_PREFIX="p"
+if [ "$DEVICE" = "$EMMC" ]; then
+    P1="${DEVICE}p1"
+    P2="${DEVICE}p2"
+    P3="${DEVICE}p3"
+    P12="${DEVICE}p12"
 fi
-
-P1="${DEVICE}${PARTITION_PREFIX}1"
-P2="${DEVICE}${PARTITION_PREFIX}2"
-P3="${DEVICE}${PARTITION_PREFIX}3"
-P12="${DEVICE}${PARTITION_PREFIX}12"
+P1="${DEVICE}1"
+P2="${DEVICE}2"
+P3="${DEVICE}3"
+P12="${DEVICE}12"
 
 OSHOST="http://archlinuxarm.org/os/"
 OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
@@ -74,38 +75,5 @@ log "Copying over devkeys (to generate kernel later)"
 mkdir -p /tmp/root/usr/share/vboot/devkeys
 cp -r /usr/share/vboot/devkeys/ /tmp/root/usr/share/vboot/
 
-if [ $DEVICE = $EMMC ]; then
-    pacman -S wget yaourt devtools-alarm base-devel git libyaml parted dosfstools
-    yaourt -Syy
-    log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
-    yaourt -S trousers vboot-utils
-
-    echo "root=${P3} rootwait rw quiet lsm.module_locking=0" >config.txt
-
-    vbutil_kernel \
-    --pack arch-eMMC.kpart \
-    --keyblock /usr/share/vboot/devkeys/kernel.keyblock \
-    --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
-    --config config.txt \
-    --vmlinuz /boot/vmlinux.uimg \
-    --arch arm \
-    --version 1
-
-    dd if=arch-eMMC.kpart of=$P1
-
-    rm arch-eMMC.kpart
-    rm config.txt
-    log "All done, we will now reboot in to ${DEVICE}"
-else
-    if [ ! -f "${UBOOTFILE}" ]; then
-        log "Downloading ${UBOOTFILE}"
-        wget ${UBOOTHOST}${UBOOTFILE}
-    else
-        log "Looks like you already have ${UBOOTFILE}"
-    fi
-    gunzip -f ${UBOOTFILE}
-    log "Writing uboot to ${P1} (this will take a moment...)"
-    dd if=nv_uboot-spring.kpart of=$P1
-    umount root
-    sync
-fi
+if [ "$DEVICE" = "$EMMC" ]; then
+    pacman -S wget yaourt devtools-alarm base-devel git libyaml parted 
