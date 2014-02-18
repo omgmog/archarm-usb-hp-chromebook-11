@@ -14,11 +14,12 @@ if [ "$DEVICE" = "$EMMC" ]; then
     P2="${DEVICE}p2"
     P3="${DEVICE}p3"
     P12="${DEVICE}p12"
+else
+    P1="${DEVICE}1"
+    P2="${DEVICE}2"
+    P3="${DEVICE}3"
+    P12="${DEVICE}12"
 fi
-P1="${DEVICE}1"
-P2="${DEVICE}2"
-P3="${DEVICE}3"
-P12="${DEVICE}12"
 
 OSHOST="http://archlinuxarm.org/os/"
 OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
@@ -75,5 +76,38 @@ log "Copying over devkeys (to generate kernel later)"
 mkdir -p /tmp/root/usr/share/vboot/devkeys
 cp -r /usr/share/vboot/devkeys/ /tmp/root/usr/share/vboot/
 
-if [ "$DEVICE" = "$EMMC" ]; then
-    pacman -S wget yaourt devtools-alarm base-devel git libyaml parted 
+if [ $DEVICE = $EMMC ]; then
+    pacman -S wget yaourt devtools-alarm base-devel git libyaml parted dosfstools
+    yaourt -Syy
+    log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
+    yaourt -S trousers vboot-utils
+
+    echo "root=${P3} rootwait rw quiet lsm.module_locking=0" >config.txt
+
+    vbutil_kernel \
+    --pack arch-eMMC.kpart \
+    --keyblock /usr/share/vboot/devkeys/kernel.keyblock \
+    --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
+    --config config.txt \
+    --vmlinuz /boot/vmlinux.uimg \
+    --arch arm \
+    --version 1
+
+    dd if=arch-eMMC.kpart of=$P1
+
+    rm arch-eMMC.kpart
+    rm config.txt
+    log "All done, we will now reboot in to ${DEVICE}"
+else
+    if [ ! -f "${UBOOTFILE}" ]; then
+        log "Downloading ${UBOOTFILE}"
+        wget ${UBOOTHOST}${UBOOTFILE}
+    else
+        log "Looks like you already have ${UBOOTFILE}"
+    fi
+    gunzip -f ${UBOOTFILE}
+    log "Writing uboot to ${P1} (this will take a moment...)"
+    dd if=nv_uboot-spring.kpart of=$P1
+    umount root
+    sync
+fi
