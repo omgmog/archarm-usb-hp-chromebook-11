@@ -72,7 +72,7 @@ log "Copying over devkeys (to generate kernel later)"
 mkdir -p /tmp/root/usr/share/vboot/devkeys
 cp -r /usr/share/vboot/devkeys/ /tmp/root/usr/share/vboot/
 
-if [ $DEVICE -eq $EMMC ]; then
+if [ $DEVICE == $EMMC ]; then
     pacman -S wget yaourt devtools-alarm base-devel git libyaml parted dosfstools
     yaourt -Syy
     log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
