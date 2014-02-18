@@ -1,17 +1,17 @@
 #!/bin/bash
+set -e
 
 log() {
     printf "\n\033[32m$*\033[00m\n"
     read -p "Press [enter] to continue." KEY
 }
-
 DEVICE=${1:-"/dev/sda"}
 EMMC="/dev/mmcblk0"
 PARTITION_PREFIX=""
-if [ $DEVICE -eq $EMMC ]; then
+if [ $DEVICE == $EMMC ]; then
     PARTITION_PREFIX="p"
 fi
-# partition references
+
 P1="${DEVICE}${PARTITION_PREFIX}1"
 P2="${DEVICE}${PARTITION_PREFIX}2"
 P3="${DEVICE}${PARTITION_PREFIX}3"
