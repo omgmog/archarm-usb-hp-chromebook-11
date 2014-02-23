@@ -26,6 +26,13 @@ OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
 UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
 UBOOTFILE="nv_uboot-spring.kpart.gz"
 
+if [ $DEVICE = $EMMC ]; then
+    # for eMMC we need to get some things before we can partition
+    pacman -Syyu yaourt devtools-alarm base-devel git libyaml parted dosfstools
+    log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
+    yaourt -Syy trousers vboot-utils
+fi
+
 log "Creating volumes on ${DEVICE}"
 umount ${DEVICE}*
 parted ${DEVICE} mklabel gpt
@@ -52,10 +59,12 @@ fi
 
 log "Installing Arch to ${P3} (this will take a moment...)"
 mkdir -p root
+
 mount $P3 root
 tar -xf ${OSFILE} -C root
 
 mkdir -p mnt
+
 mount $P2 mnt
 cp root/boot/vmlinux.uimg mnt
 umount mnt
@@ -65,23 +74,13 @@ mkdir -p mnt/u-boot
 cp root/boot/boot.scr.uimg mnt/u-boot
 umount mnt
 
-log "Mounting filesystems from ${DEVICE}"
-mount $P3 /tmp/root
-mount -o bind /dev /tmp/root/dev
-mount -t devpts none /tmp/root/dev/pts
-mount -t proc proc /tmp/root/proc
-mount -t sysfs sys /tmp/root/sys
-
-log "Copying over devkeys (to generate kernel later)"
-mkdir -p /tmp/root/usr/share/vboot/devkeys
-cp -r /usr/share/vboot/devkeys/ /tmp/root/usr/share/vboot/
+if [ $DEVICE != $EMMC ]; then
+    log "Copying over devkeys (to generate kernel later)"
+    mkdir -p /tmp/root/usr/share/vboot/devkeys
+    cp -r /usr/share/vboot/devkeys/ /tmp/root/usr/share/vboot/
+fi
 
 if [ $DEVICE = $EMMC ]; then
-    pacman -S wget yaourt devtools-alarm base-devel git libyaml parted dosfstools
-    yaourt -Syy
-    log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
-    yaourt -S trousers vboot-utils
-
     echo "root=${P3} rootwait rw quiet lsm.module_locking=0" >config.txt
 
     vbutil_kernel \
@@ -95,9 +94,7 @@ if [ $DEVICE = $EMMC ]; then
 
     dd if=arch-eMMC.kpart of=$P1
 
-    rm arch-eMMC.kpart
-    rm config.txt
-    log "All done, we will now reboot in to ${DEVICE}"
+    log "All done! Reboot and press ctrl + D to boot Arch"
 else
     if [ ! -f "${UBOOTFILE}" ]; then
         log "Downloading ${UBOOTFILE}"
@@ -106,8 +103,8 @@ else
         log "Looks like you already have ${UBOOTFILE}"
     fi
     gunzip -f ${UBOOTFILE}
-    log "Writing uboot to ${P1} (this will take a moment...)"
     dd if=nv_uboot-spring.kpart of=$P1
-    umount root
-    sync
+
+    log "All done! Reboot and press ctrl + U to boot Arch from ${DEVICE}"
 fi
+sync

@@ -28,6 +28,7 @@ sh install.sh "/dev/sda"
 After you've made a USB stick and booted from it, you can download and run the `install.sh` again and install to `/dev/mmcblk0` (the eMMC) for a much nicer/faster Arch experience.
 
 ```
+pacman -Syy wget
 wget https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
 sh install.sh "/dev/mmcblk0"
 ```
@@ -53,12 +54,13 @@ You can then build and install `trousers` and `vboot-utils` with no problem.
 I've included a [`post-install.sh`](https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh), which you can use to setup the final bits after you've booted your Arch USB stick.
 
 ```
-pacman -S wget
+pacman -Syy wget # if not already installed
 wget https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh
 sh post-install.sh
 ```
 
 This will install the following packages:
+
 ```
 mate mate-extra xorg-server xorg-xinit xorg-server-utils xterm alsa-utils xf86-video-armsoc-chromium xf86-input-synaptics lightdm lightdm-gtk2-greeter
 ```
