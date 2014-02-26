@@ -2,7 +2,9 @@ Arch ARM USB installer for the HP Chromebook 11
 ============================
 
 
-A write-up of the process can be found on [my blog](http://blog.omgmog.net/post/installing-arch-linux-arm-on-the-hp-chromebook-11/).
+A write-up of the process can be found here: [http://blog.omgmog.net/post/installing-arch-linux-arm-on-the-hp-chromebook-11/](http://blog.omgmog.net/post/installing-arch-linux-arm-on-the-hp-chromebook-11/)
+
+A video of the process can be found here: [http://blog.omgmog.net/post/video-installing-arch-linux-arm-on-the-hp-chromebook-11/](http://blog.omgmog.net/post/video-installing-arch-linux-arm-on-the-hp-chromebook-11/)
 
 
 ## Derived from the following:
