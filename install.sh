@@ -23,8 +23,8 @@ fi
 
 OSHOST="http://archlinuxarm.org/os/"
 OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
-UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
-UBOOTFILE="nv_uboot-spring.kpart.gz"
+UBOOTHOST="http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/"
+UBOOTFILE="nv_uboot-snow.kpart.bz2"
 
 if [ $DEVICE = $EMMC ]; then
     # for eMMC we need to get some things before we can partition
@@ -48,7 +48,8 @@ mkfs.ext2 $P2
 mkfs.ext4 $P3
 mkfs.vfat -F 16 $P12
 
-cd /tmp
+# no space /tmp
+# cd /tmp
 
 if [ ! -f "${OSFILE}" ]; then
     log "Downloading ${OSFILE}"
@@ -102,8 +103,8 @@ else
     else
         log "Looks like you already have ${UBOOTFILE}"
     fi
-    gunzip -f ${UBOOTFILE}
-    dd if=nv_uboot-spring.kpart of=$P1
+    bunzip2 -f ${UBOOTFILE}
+    dd if=nv_uboot-snow.kpart of=$P1
 
     log "All done! Reboot and press ctrl + U to boot Arch from ${DEVICE}"
 fi
