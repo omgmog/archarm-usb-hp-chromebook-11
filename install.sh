@@ -8,6 +8,8 @@ log() {
 EMMC="/dev/mmcblk0"
 DEFAULT_USB="/dev/sda"
 DEVICE=${1:-$DEFAULT_USB}
+# hwid lets us know if this is a hp chromebook , Samsung chromebook, etc
+declare -l m HWID=(`crossystem hwid`)
 
 if [ "$DEVICE" = "$EMMC" ]; then
     P1="${DEVICE}p1"
@@ -23,8 +25,14 @@ fi
 
 OSHOST="http://archlinuxarm.org/os/"
 OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
-UBOOTHOST="http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/"
-UBOOTFILE="nv_uboot-snow.kpart.bz2"
+
+if [ $HWID = 'snow' ]; then
+    UBOOTHOST="http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/"
+    UBOOTFILE="nv_uboot-${HWID}.kpart.bz2"
+else
+    UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
+    UBOOTFILE="nv_uboot-${HWID}.kpart.gz"
+fi
 
 if [ $DEVICE = $EMMC ]; then
     # for eMMC we need to get some things before we can partition
@@ -48,8 +56,7 @@ mkfs.ext2 $P2
 mkfs.ext4 $P3
 mkfs.vfat -F 16 $P12
 
-# no space /tmp
-# cd /tmp
+cd /tmp
 
 if [ ! -f "${OSFILE}" ]; then
     log "Downloading ${OSFILE}"
@@ -103,8 +110,14 @@ else
     else
         log "Looks like you already have ${UBOOTFILE}"
     fi
-    bunzip2 -f ${UBOOTFILE}
-    dd if=nv_uboot-snow.kpart of=$P1
+
+    if [ $HWID = "snow" ]; then
+        bunzip2 -f ${UBOOTFILE}
+    else
+        gunzip -f ${UBOOTFILE}
+    fi
+
+    dd if=nv_uboot-${HWID}.kpart of=$P1
 
     log "All done! Reboot and press ctrl + U to boot Arch from ${DEVICE}"
 fi
