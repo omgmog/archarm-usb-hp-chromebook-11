@@ -1,8 +1,5 @@
-note: this repo is for samsung chromebook !!!
-============================
 
-
-Arch ARM USB installer for the samsung chromebook
+Arch ARM USB installer for the ARM chromebook
 ============================
 
 
