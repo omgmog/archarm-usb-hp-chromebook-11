@@ -9,7 +9,8 @@ EMMC="/dev/mmcblk0"
 DEFAULT_USB="/dev/sda"
 DEVICE=${1:-$DEFAULT_USB}
 # hwid lets us know if this is a hp chromebook , Samsung chromebook, etc
-declare -l m HWID=(`crossystem hwid`)
+declare -l HWID
+HWID=(`crossystem hwid`)
 
 if [ "$DEVICE" = "$EMMC" ]; then
     P1="${DEVICE}p1"
