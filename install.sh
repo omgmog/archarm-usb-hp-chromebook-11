@@ -8,16 +8,16 @@ log() {
 EMMC="/dev/mmcblk0"
 DEFAULT_USB="/dev/sda"
 DEVICE=${1:-$DEFAULT_USB}
-# hwid lets us know if this is a hp chromebook , Samsung chromebook, etc
-declare -l HWID
-HWID=(`crossystem hwid`)
 
 if [ "$DEVICE" = "$EMMC" ]; then
+    # hwid lets us know if this is a hp chromebook , Samsung chromebook, etc
+    HWID=`(crossystem hwid) | tr '[A-Z]' '[a-z]'`
     P1="${DEVICE}p1"
     P2="${DEVICE}p2"
     P3="${DEVICE}p3"
     P12="${DEVICE}p12"
 else
+    HWID=
     P1="${DEVICE}1"
     P2="${DEVICE}2"
     P3="${DEVICE}3"
@@ -30,7 +30,7 @@ OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
 if [ $HWID = 'snow' ]; then
     UBOOTHOST="http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/"
     UBOOTFILE="nv_uboot-${HWID}.kpart.bz2"
-else
+else if [ $HWID = 'spring' ]; then
     UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
     UBOOTFILE="nv_uboot-${HWID}.kpart.gz"
 fi
