@@ -113,7 +113,7 @@ else
         log "Looks like you already have ${UBOOTFILE}"
     fi
 
-    if [ $HWID = "snow" ]; then
+    if [ "$HWID" = "snow" ]; then
         bunzip2 -f ${UBOOTFILE}
     else
         gunzip -f ${UBOOTFILE}
