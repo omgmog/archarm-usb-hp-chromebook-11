@@ -10,14 +10,14 @@ DEFAULT_USB="/dev/sda"
 DEVICE=${1:-$DEFAULT_USB}
 
 if [ "$DEVICE" = "$EMMC" ]; then
-    # hwid lets us know if this is a hp chromebook , Samsung chromebook, etc
-    HWID=`(crossystem hwid) | tr '[A-Z]' '[a-z]'`
+    HWID=""
     P1="${DEVICE}p1"
     P2="${DEVICE}p2"
     P3="${DEVICE}p3"
     P12="${DEVICE}p12"
 else
-    HWID=
+    # hwid lets us know if this is a hp chromebook , Samsung chromebook, etc
+    HWID=`crossystem hwid | tr '[A-Z]' '[a-z]' | awk '{print $1;}'`
     P1="${DEVICE}1"
     P2="${DEVICE}2"
     P3="${DEVICE}3"
@@ -27,10 +27,10 @@ fi
 OSHOST="http://archlinuxarm.org/os/"
 OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
 
-if [ $HWID = 'snow' ]; then
+if [ "$HWID" = "snow" ]; then
     UBOOTHOST="http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/"
     UBOOTFILE="nv_uboot-${HWID}.kpart.bz2"
-else if [ $HWID = 'spring' ]; then
+elif [ "$HWID" = "spring" ]; then
     UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
     UBOOTFILE="nv_uboot-${HWID}.kpart.gz"
 fi
@@ -118,7 +118,7 @@ else
         gunzip -f ${UBOOTFILE}
     fi
 
-    dd if=nv_uboot-${HWID}.kpart of=$P1
+    d if=nv_uboot-${HWID}.kpart of=$P1
 
     log "All done! Reboot and press ctrl + U to boot Arch from ${DEVICE}"
 fi
