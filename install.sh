@@ -36,6 +36,7 @@ elif [ "$HWID" = "spring" ]; then
 fi
 
 if [ $DEVICE = $EMMC ]; then
+    type pacman 2>/dev/null || { echo "You should first run: \n sh install.sh /dev/sda"; exit 1;}
     # for eMMC we need to get some things before we can partition
     pacman -Syyu yaourt devtools-alarm base-devel git libyaml parted dosfstools
     log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
