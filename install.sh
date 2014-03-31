@@ -118,7 +118,7 @@ else
         gunzip -f ${UBOOTFILE}
     fi
 
-    d if=nv_uboot-${HWID}.kpart of=$P1
+    dd if=nv_uboot-${HWID}.kpart of=$P1
 
     log "All done! Reboot and press ctrl + U to boot Arch from ${DEVICE}"
 fi
