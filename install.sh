@@ -30,9 +30,11 @@ OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
 if [ "$HWID" = "snow" ]; then
     UBOOTHOST="http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/"
     UBOOTFILE="nv_uboot-${HWID}.kpart.bz2"
+    DECOMPRESS_CMD="bunzip2"
 elif [ "$HWID" = "spring" ]; then
     UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
     UBOOTFILE="nv_uboot-${HWID}.kpart.gz"
+    DECOMPRESS_CMD="gunzip"
 fi
 
 if [ $DEVICE = $EMMC ]; then
@@ -113,12 +115,7 @@ else
         log "Looks like you already have ${UBOOTFILE}"
     fi
 
-    if [ "$HWID" = "snow" ]; then
-        bunzip2 -f ${UBOOTFILE}
-    else
-        gunzip -f ${UBOOTFILE}
-    fi
-
+    $DECOMPRESS_CMD -f ${UBOOTFILE}
     dd if=nv_uboot-${HWID}.kpart of=$P1
 
     log "All done! Reboot and press ctrl + U to boot Arch from ${DEVICE}"
