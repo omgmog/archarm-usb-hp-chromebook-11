@@ -29,9 +29,9 @@ UBOOTFILE="nv_uboot-spring.kpart.gz"
 if [ $DEVICE = $EMMC ]; then
     # for eMMC we need to get some things before we can partition
     echo -e "\n[archlinuxfr]\nSigLevel = Never\nServer = http://repo.archlinux.fr/arm\n" >> /etc/pacman.conf
-    pacman -Syyu yaourt devtools-alarm base-devel git libyaml parted dosfstools
+    pacman -Syyu packer devtools-alarm base-devel git libyaml parted dosfstools cgpt parted
     log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
-    yaourt -Syy trousers vboot-utils
+    packer -S trousers vboot-utils
 fi
 
 log "Creating volumes on ${DEVICE}"
