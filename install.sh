@@ -95,6 +95,8 @@ if [ $DEVICE = $EMMC ]; then
 
     dd if=arch-eMMC.kpart of=$P1
 
+    sync
+
     log "All done! Reboot and press ctrl + D to boot Arch"
 else
     if [ ! -f "${UBOOTFILE}" ]; then
@@ -106,6 +108,7 @@ else
     gunzip -f ${UBOOTFILE}
     dd if=nv_uboot-spring.kpart of=$P1
 
+    sync
+
     log "All done! Reboot and press ctrl + U to boot Arch from ${DEVICE}"
 fi
-sync
