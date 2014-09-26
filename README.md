@@ -1,4 +1,5 @@
-Arch ARM USB installer for the HP Chromebook 11
+
+Arch ARM USB installer for the ARM chromebook
 ============================
 
 

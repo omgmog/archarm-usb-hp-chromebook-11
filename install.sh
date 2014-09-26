@@ -10,11 +10,14 @@ DEFAULT_USB="/dev/sda"
 DEVICE=${1:-$DEFAULT_USB}
 
 if [ "$DEVICE" = "$EMMC" ]; then
+    HWID=""
     P1="${DEVICE}p1"
     P2="${DEVICE}p2"
     P3="${DEVICE}p3"
     P12="${DEVICE}p12"
 else
+    # hwid lets us know if this is a hp chromebook , Samsung chromebook, etc
+    HWID=`crossystem hwid | tr '[A-Z]' '[a-z]' | awk '{print $1;}'`
     P1="${DEVICE}1"
     P2="${DEVICE}2"
     P3="${DEVICE}3"
@@ -23,10 +26,19 @@ fi
 
 OSHOST="http://archlinuxarm.org/os/"
 OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
-UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
-UBOOTFILE="nv_uboot-spring.kpart.gz"
+
+if [ "$HWID" = "snow" ]; then
+    UBOOTHOST="http://commondatastorage.googleapis.com/chromeos-localmirror/distfiles/"
+    UBOOTFILE="nv_uboot-${HWID}.kpart.bz2"
+    DECOMPRESS_CMD="bunzip2"
+elif [ "$HWID" = "spring" ]; then
+    UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
+    UBOOTFILE="nv_uboot-${HWID}.kpart.gz"
+    DECOMPRESS_CMD="gunzip"
+fi
 
 if [ $DEVICE = $EMMC ]; then
+    type pacman 2>/dev/null || { echo "You should first run: \n sh install.sh /dev/sda"; exit 1;}
     # for eMMC we need to get some things before we can partition
     echo -e "\n[archlinuxfr]\nSigLevel = Never\nServer = http://repo.archlinux.fr/arm\n" >> /etc/pacman.conf
     pacman -Syyu packer devtools-alarm base-devel git libyaml parted dosfstools cgpt parted
@@ -105,8 +117,9 @@ else
     else
         log "Looks like you already have ${UBOOTFILE}"
     fi
-    gunzip -f ${UBOOTFILE}
-    dd if=nv_uboot-spring.kpart of=$P1
+
+    $DECOMPRESS_CMD -f ${UBOOTFILE}
+    dd if=nv_uboot-${HWID}.kpart of=$P1
 
     sync
 
