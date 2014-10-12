@@ -23,6 +23,7 @@ fi
 
 OSHOST="http://archlinuxarm.org/os/"
 OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
+BOOTFILE="boot.scr.uimg"
 UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
 UBOOTFILE="nv_uboot-spring.kpart.gz"
 
@@ -63,6 +64,13 @@ mkdir -p root
 
 mount $P3 root
 tar -xf ${OSFILE} -C root
+
+if [ ! -f "root/boot/${BOOTFILE}" ]; then
+    log "Downloading ${BOOTFILE}"
+    wget -O "root/boot/${BOOTFILE}" "${OSHOST}exynos/${BOOTFILE}"
+else
+    log "Looks like we already have boot.scr.uimg"
+fi
 
 mkdir -p mnt
 
