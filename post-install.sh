@@ -1,5 +1,5 @@
 #!/bin/bash
-REPOPATH="https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/"
+REPOPATH="https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/"
 
 # Update pacman and install some important things
 pacman -Syyu
