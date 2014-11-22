@@ -3,8 +3,7 @@ REPOPATH="https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/
 
 # Update pacman and install some important things
 pacman -Syyu
-pacman -S mesa-libgl
-pacman -S mate xorg-server xorg-xinit xorg-server-utils xterm alsa-utils xf86-video-fbdev xf86-input-synaptics
+pacman -S mesa-libgl mate xorg-server xorg-xinit xorg-server-utils xterm alsa-utils xf86-video-fbdev xf86-input-synaptics
 pacman -S lightdm lightdm-gtk2-greeter
 systemctl enable lightdm
 echo "exec mate-session" > ~/.xinitrc
