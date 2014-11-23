@@ -27,7 +27,7 @@ A video of the process can be found here: [http://blog.omgmog.net/post/video-ins
 On your Chromebook with Developer Mode enabled:
 
 ```
-wget https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
+wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
 sh install.sh "/dev/sda"
 ```
 
@@ -35,7 +35,7 @@ After you've made a USB stick and booted from it, you can download and run the `
 
 ```
 pacman -Syy wget
-wget https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
+wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
 sh install.sh "/dev/mmcblk0"
 ```
 Regarding the modification of the PKGBUILD for `trousers`:
@@ -57,11 +57,11 @@ You can then build and install `trousers` and `vboot-utils` with no problem.
 
 ## Post-install
 
-I've included a [`post-install.sh`](https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh), which you can use to setup the final bits after you've booted your Arch USB stick.
+I've included a [`post-install.sh`](https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh), which you can use to setup the final bits after you've booted your Arch USB stick.
 
 ```
 pacman -Syy wget # if not already installed
-wget https://raw2.github.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh
+wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh
 sh post-install.sh
 ```
 
