@@ -72,6 +72,26 @@ else
     log "Looks like we already have boot.scr.uimg"
 fi
 
+echo "Ensuring arch rootfs is correctly mounted"
+mount -o remount,exec root/
+echo "Copying resolv.conf from your chromebook for networking"
+rm root/etc/resolv.conf
+cp /etc/resolv.conf root/etc/resolv.conf
+echo "mounting proc,sys and dev for chroot"
+mount -t proc proc root/proc/
+mount --rbind /sys root/sys/
+mount --rbind /dev root/dev/
+echo "downloading old version of systemd"
+wget https://www.dropbox.com/s/ajfrn1gwtl8b3ap/systemd-212-3-armv7h.pkg.tar.xz?dl=0 --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
+echo "creating systemd fix script"
+echo "#!/bin/bash" >> root/chrootscript.sh
+echo "pacman -Ud /systemd-212-3-armv7h.pkg.tar.xz" >> root/chrootscript.sh
+echo "echo 'IgnorePkg = systemd'>>etc/pacman.conf" >> root/chrootscript.sh
+echo "passwd root" >> root/chrootscript.sh
+echo "rm chrootscript.sh" >> root/chrootscript.sh
+echo "Launching chroot script inside chroot"
+chroot root/ /bin/bash -c "chrootscript.sh"
+
 mkdir -p mnt
 
 mount $P2 mnt
