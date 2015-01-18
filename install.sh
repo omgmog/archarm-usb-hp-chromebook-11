@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Warning : The Partition creation features of this script are currently broken due to a chromeOS update, please use the prepare-usb.sh script on a normal linux setup (not chromeos) to prepare your USB stick. Then plug it in and run this script."
+read -p "if you have already done this and your USB stick is inserted or if you are installing to EMMC Press enter to begin."
 log() {
     printf "\n\033[32m$*\033[00m\n"
     read -p "Press [enter] to continue." KEY
@@ -34,21 +36,21 @@ if [ $DEVICE = $EMMC ]; then
     log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
     packer -S trousers vboot-utils
 fi
-
-log "Creating volumes on ${DEVICE}"
+# The following have been disabled until we can fix the script.
+#log "Creating volumes on ${DEVICE}"
 umount ${DEVICE}*
-parted ${DEVICE} mklabel gpt
-cgpt create -z ${DEVICE}
-cgpt create ${DEVICE}
-cgpt add -i 1 -t kernel -b 8192 -s 32768 -l U-Boot -S 1 -T 5 -P 10 ${DEVICE}
-cgpt add -i 2 -t data -b 40960 -s 32768 -l Kernel ${DEVICE}
-cgpt add -i 12 -t data -b 73728 -s 32768 -l Script ${DEVICE}
-PARTSIZE=`cgpt show ${DEVICE} | grep 'Sec GPT table' | egrep -o '[0-9]+' | head -n 1`
-cgpt add -i 3 -t data -b 106496 -s `expr ${PARTSIZE} - 106496` -l Root ${DEVICE}
-partprobe ${DEVICE}
-mkfs.ext2 $P2
-mkfs.ext4 $P3
-mkfs.vfat -F 16 $P12
+#parted ${DEVICE} mklabel gpt
+#cgpt create -z ${DEVICE}
+#cgpt create ${DEVICE}
+#cgpt add -i 1 -t kernel -b 8192 -s 32768 -l U-Boot -S 1 -T 5 -P 10 ${DEVICE}
+#cgpt add -i 2 -t data -b 40960 -s 32768 -l Kernel ${DEVICE}
+#cgpt add -i 12 -t data -b 73728 -s 32768 -l Script ${DEVICE}
+#PARTSIZE=`cgpt show ${DEVICE} | grep 'Sec GPT table' | egrep -o '[0-9]+' | head -n 1`
+#cgpt add -i 3 -t data -b 106496 -s `expr ${PARTSIZE} - 106496` -l Root ${DEVICE}
+#partprobe ${DEVICE}
+#mkfs.ext2 $P2
+#mkfs.ext4 $P3
+#mkfs.vfat -F 16 $P12
 
 cd /tmp
 
@@ -71,6 +73,27 @@ if [ ! -f "root/boot/${BOOTFILE}" ]; then
 else
     log "Looks like we already have boot.scr.uimg"
 fi
+
+echo "Ensuring arch rootfs is correctly mounted"
+mount -o remount,exec root/
+echo "Copying resolv.conf from your chromebook for networking"
+rm root/etc/resolv.conf
+cp /etc/resolv.conf root/etc/resolv.conf
+echo "mounting proc,sys and dev for chroot"
+mount -t proc proc root/proc/
+mount --rbind /sys root/sys/
+mount --rbind /dev root/dev/
+echo "downloading old version of systemd"
+wget https://www.dropbox.com/s/ajfrn1gwtl8b3ap/systemd-212-3-armv7h.pkg.tar.xz?dl=0 --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
+echo "creating systemd fix script"
+echo "#!/bin/bash" >> root/chrootscript.sh
+echo "pacman -Ud /systemd-212-3-armv7h.pkg.tar.xz" >> root/chrootscript.sh
+echo "echo 'IgnorePkg = systemd'>>etc/pacman.conf" >> root/chrootscript.sh
+echo "passwd root" >> root/chrootscript.sh
+echo "rm chrootscript.sh" >> root/chrootscript.sh
+chmod +x root/chrootscript.sh
+echo "Launching chroot script inside chroot"
+chroot root/ /bin/bash -c "/chrootscript.sh"
 
 mkdir -p mnt
 
