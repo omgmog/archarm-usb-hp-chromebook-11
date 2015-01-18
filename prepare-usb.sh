@@ -2,9 +2,9 @@
 echo "This Script will prepare a USB device for Use with the script."
 echo "It should be run on a normal linux install (not chromeos) with the cgpt package"
 echo "it should also, of course, be run as root"
-echo "Please Input the disk you wish to prepare in the format /dev/sdX . X being the disks letter"
 echo "WARNING : CHOOSING THE INCORRECT DISK COULD CAUSE DATA LOSS. DO NOT DO THIS UNLESS YOU KNOW WHAT YOU ARE DOING"
 echo "If for any reason you wish to quit this script, press Ctrl + C now."
+echo "Please Input the disk you wish to prepare in the format /dev/sdX . X being the disks letter"
 read DEVICE
 P1="${DEVICE}1"
 P2="${DEVICE}2"

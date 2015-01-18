@@ -17,16 +17,10 @@ A video of the process can be found here: [http://blog.omgmog.net/post/video-ins
 - Enabled developer mode
 - Enabled booting from USB devices
 - A USB stick (2GB should be fine)
-# Workaround for partx problem :
-On a normal Linux install (not your chromebook) with the cgpg package installed. Download and run the prepare-usb.sh script.
-Once your usb device is prepared, plug it into your chromebook and run 
-```
-wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
-sh install.sh "/dev/sda"
-```
-This will prepare the USB, after that you should be able to reboot onto your Arch USB !
 
-# Traditional method (Currently not working since the removal of `parted` and `partprobe` from Chromium in favour of `partx`. Working on a fix at [#14](https://github.com/omgmog/archarm-usb-hp-chromebook-11/issues/14))
+
+# Currently not working since the removal of `parted` and `partprobe` from Chromium in favour of `partx`. Working on a fix at [#14](https://github.com/omgmog/archarm-usb-hp-chromebook-11/issues/14)
+
 
 ## To use this script
 
