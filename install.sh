@@ -74,7 +74,7 @@ mount -t proc proc root/proc/
 mount --rbind /sys root/sys/
 mount --rbind /dev root/dev/
 log "downloading old version of systemd"
-wget https://www.dropbox.com/s/ajfrn1gwtl8b3ap/systemd-212-3-armv7h.pkg.tar.xz?dl=0 --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
+wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/systemd-212-3-armv7h.pkg.tar.xz --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
 log "creating systemd fix script"
 echo "#!/bin/bash" >> root/chrootscript.sh
 echo "pacman -Ud /systemd-212-3-armv7h.pkg.tar.xz" >> root/chrootscript.sh
