@@ -64,6 +64,26 @@ mkdir -p root
 
 mount $P3 root
 tar -xf ${OSFILE} -C root
+log "Ensuring arch rootfs is correctly mounted"
+mount -o remount,exec root/
+log "Copying resolv.conf from your chromebook for networking"
+rm root/etc/resolv.conf
+cp /etc/resolv.conf root/etc/resolv.conf
+log "mounting proc,sys and dev for chroot"
+mount -t proc proc root/proc/
+mount --rbind /sys root/sys/
+mount --rbind /dev root/dev/
+log "downloading old version of systemd"
+wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/systemd-212-3-armv7h.pkg.tar.xz --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
+log "creating systemd fix script"
+echo "#!/bin/bash" >> root/chrootscript.sh
+echo "pacman -Ud /systemd-212-3-armv7h.pkg.tar.xz" >> root/chrootscript.sh
+echo "echo 'IgnorePkg = systemd'>>etc/pacman.conf" >> root/chrootscript.sh
+echo "passwd root" >> root/chrootscript.sh
+echo "rm chrootscript.sh" >> root/chrootscript.sh
+chmod +x root/chrootscript.sh
+log "Launching chroot script inside chroot"
+chroot root/ /bin/bash -c "/chrootscript.sh"
 
 if [ ! -f "root/boot/${BOOTFILE}" ]; then
     log "Downloading ${BOOTFILE}"
