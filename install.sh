@@ -79,7 +79,7 @@ wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/maste
 log "downloading systemd fix script"
 wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/fix-systemd.sh --output-document=root/fix-systemd.sh
 chmod +x root/fix-systemd.sh
-chroot root/ /bin/bash -c "/chrootscript.sh"
+chroot root/ /bin/bash -c "/fix-systemd.sh"
 
 if [ ! -f "root/boot/${BOOTFILE}" ]; then
     log "Downloading ${BOOTFILE}"
