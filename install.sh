@@ -58,15 +58,12 @@ if [ ! -f "${OSFILE}" ]; then
 else
     log "Looks like you already have ${OSFILE}"
 fi
-
 log "Installing Arch to ${P3} (this will take a moment...)"
+umount ${DEVICE}*
 mkdir -p root
-
-mount $P3 root
+mount -o exec $P3 root
 tar -xf ${OSFILE} -C root
 
-log "Remounting RootFS for chroot (systemd fix)"
-mount -o remount,exec root/
 log "Copying resolv.conf from your chromebook for networking"
 rm root/etc/resolv.conf
 cp /etc/resolv.conf root/etc/resolv.conf
