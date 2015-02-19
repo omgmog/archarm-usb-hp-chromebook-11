@@ -26,15 +26,6 @@ OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
 BOOTFILE="boot.scr.uimg"
 UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
 UBOOTFILE="nv_uboot-spring.kpart.gz"
-log "Ensuring the proper paritioning tools are availible"
-if (which parted)
-then echo "parted is installed. Installation can proceed"
-else 
-	echo "parted must be downloaded !"
-	log "When prompted to install virtual/target-os-dev press N"
-	dev_install
-	emerge parted
-fi
 echo "Getting working cgpt binary"
 wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/deps/cgpt --output-document=/usr/local/bin/cgpt
 chmod +x /usr/local/bin/cgpt
@@ -43,6 +34,16 @@ if [ $DEVICE = $EMMC ]; then
     pacman -Syyu packer devtools-alarm base-devel git libyaml parted dosfstools cgpt parted
     log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
     packer -S trousers vboot-utils
+else
+    log "Ensuring the proper paritioning tools are availible"
+    if (which parted); then 
+	echo "parted is installed. Installation can proceed"
+    else 
+	echo "parted must be downloaded !"
+	log "When prompted to install virtual/target-os-dev press N"
+	dev_install
+	emerge parted
+    fi
 fi
 
 log "Creating volumes on ${DEVICE}"
