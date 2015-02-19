@@ -26,7 +26,17 @@ OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
 BOOTFILE="boot.scr.uimg"
 UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
 UBOOTFILE="nv_uboot-spring.kpart.gz"
-wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/cgpt --output-document=/usr/local/bin/cgpt
+log "Ensuring the proper paritioning tools are availible"
+if (which parted)
+then echo "parted is installed. Installation can proceed"
+else 
+	echo "parted must be downloaded !"
+	log "When prompted to install virtual/target-os-dev press N"
+	dev_install
+	emerge parted
+fi
+echo "Getting working cgpt binary"
+wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/deps/cgpt --output-document=/usr/local/bin/cgpt
 if [ $DEVICE = $EMMC ]; then
     # for eMMC we need to get some things before we can partition
     echo -e "\n[archlinuxfr]\nSigLevel = Never\nServer = http://repo.archlinux.fr/arm\n" >> /etc/pacman.conf
@@ -72,7 +82,7 @@ mount -t proc proc root/proc/
 mount --rbind /sys root/sys/
 mount --rbind /dev root/dev/
 log "downloading old version of systemd"
-wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/systemd-212-3-armv7h.pkg.tar.xz --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
+wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/deps/systemd-212-3-armv7h.pkg.tar.xz --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
 log "downloading systemd fix script"
 wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/fix-systemd.sh --output-document=root/fix-systemd.sh
 chmod +x root/fix-systemd.sh
