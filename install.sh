@@ -26,6 +26,16 @@ OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
 BOOTFILE="boot.scr.uimg"
 UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
 UBOOTFILE="nv_uboot-spring.kpart.gz"
+log "Ensuring the proper paritioning tools are availible"
+if (which parted)
+then echo "parted is installed. Installation can proceed"
+else 
+	echo "parted must be downloaded !"
+	log "When prompted to install virtual/target-os-dev press N"
+	dev_install
+	emerge parted
+fi
+echo "Getting working cgpt binary"
 wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/deps/cgpt --output-document=/usr/local/bin/cgpt
 if [ $DEVICE = $EMMC ]; then
     # for eMMC we need to get some things before we can partition
