@@ -78,7 +78,6 @@ tar -xf ${OSFILE} -C root
 log "Copying resolv.conf from your chromebook for networking"
 rm root/etc/resolv.conf
 cp /etc/resolv.conf root/etc/resolv.conf
-log "mounting proc,sys and dev for chroot"
 mount -t proc proc root/proc/
 mount --rbind /sys root/sys/
 mount --rbind /dev root/dev/
