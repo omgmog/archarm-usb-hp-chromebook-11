@@ -26,7 +26,7 @@ On your Chromebook with Developer Mode enabled:
 ```
 sudo su -
 cd /tmp
-wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
+wget http://git.io/A3D0 -O install.sh
 sh install.sh "/dev/sda"
 ```
 
@@ -34,7 +34,7 @@ After you've made a USB stick and booted from it, you can download and run the `
 
 ```
 pacman -Syy wget
-wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
+wget http://git.io/A3D0 -O install.sh
 sh install.sh "/dev/mmcblk0"
 ```
 Regarding the modification of the PKGBUILD for `trousers`:
