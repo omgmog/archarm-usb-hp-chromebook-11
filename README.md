@@ -19,14 +19,13 @@ A video of the process can be found here: [http://blog.omgmog.net/post/video-ins
 - A USB stick (2GB should be fine)
 
 
-# Currently not working since the removal of `parted` and `partprobe` from Chromium in favour of `partx`. Working on a fix at [#14](https://github.com/omgmog/archarm-usb-hp-chromebook-11/issues/14)
-
-
 ## To use this script
 
 On your Chromebook with Developer Mode enabled:
 
 ```
+sudo su -
+cd /tmp
 wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/install.sh
 sh install.sh "/dev/sda"
 ```
