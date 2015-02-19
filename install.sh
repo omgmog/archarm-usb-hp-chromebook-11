@@ -31,7 +31,7 @@ wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/maste
 chmod +x /usr/local/bin/cgpt
 if [ $DEVICE = $EMMC ]; then
     # for eMMC we need to get some things before we can partition
-    pacman -Syyu packer devtools-alarm base-devel git libyaml parted dosfstools cgpt parted
+    pacman -Syyu packer devtools-alarm base-devel git libyaml parted dosfstools parted
     log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
     packer -S trousers vboot-utils
 else
