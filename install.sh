@@ -75,15 +75,16 @@ mkdir -p root
 mount -o exec $P3 root
 tar -xf ${OSFILE} -C root
 
-log "Copying resolv.conf from your chromebook for networking"
+log "Preparing system for chroot"
 rm root/etc/resolv.conf
 cp /etc/resolv.conf root/etc/resolv.conf
-log "mounting proc,sys and dev for chroot"
 mount -t proc proc root/proc/
 mount --rbind /sys root/sys/
 mount --rbind /dev root/dev/
-log "downloading old version of systemd"
+log "downloading old version of systemd and pacman.conf"
+rm root/etc/pacman.conf
 wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/deps/systemd-212-3-armv7h.pkg.tar.xz --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
+wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/deps/pacman.conf --output-document=root/etc/pacman.conf
 log "downloading systemd fix script"
 wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/fix-systemd.sh --output-document=root/fix-systemd.sh
 chmod +x root/fix-systemd.sh
