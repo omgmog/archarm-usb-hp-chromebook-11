@@ -84,6 +84,7 @@ log "downloading old version of systemd and pacman.conf"
 rm root/etc/pacman.conf
 wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/deps/systemd-212-3-armv7h.pkg.tar.xz --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
 wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/deps/pacman.conf --output-document=root/etc/pacman.conf
+wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh --output-document=root/post-install.sh
 log "downloading systemd fix script"
 wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/fix-systemd.sh --output-document=root/fix-systemd.sh
 chmod +x root/fix-systemd.sh
