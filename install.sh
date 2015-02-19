@@ -76,6 +76,7 @@ mount -o exec $P3 root
 tar -xf ${OSFILE} -C root
 
 log "Preparing system for chroot"
+cp install.sh root/install.sh
 rm root/etc/resolv.conf
 cp /etc/resolv.conf root/etc/resolv.conf
 mount -t proc proc root/proc/
