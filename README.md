@@ -59,8 +59,7 @@ You can then build and install `trousers` and `vboot-utils` with no problem.
 I've included a [`post-install.sh`](https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh), which you can use to setup the final bits after you've booted your Arch USB stick.
 
 ```
-pacman -Syy wget # if not already installed
-wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/post-install.sh
+cd /
 sh post-install.sh
 ```
 
