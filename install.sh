@@ -37,6 +37,7 @@ else
 fi
 echo "Getting working cgpt binary"
 wget https://raw.githubusercontent.com/omgmog/archarm-usb-hp-chromebook-11/master/deps/cgpt --output-document=/usr/local/bin/cgpt
+chmod +x /usr/local/bin/cgpt
 if [ $DEVICE = $EMMC ]; then
     # for eMMC we need to get some things before we can partition
     echo -e "\n[archlinuxfr]\nSigLevel = Never\nServer = http://repo.archlinux.fr/arm\n" >> /etc/pacman.conf
