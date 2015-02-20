@@ -27,15 +27,16 @@ On your Chromebook with Developer Mode enabled:
 sudo su -
 cd /tmp
 wget http://git.io/A3D0 -O install.sh
-sh install.sh "/dev/sda"
+bash install.sh "/dev/sda"
 ```
+**NOTE**: This needs to be run with /bin/bash, not /bin/sh, which is ash.
 
 After you've made a USB stick and booted from it, you can download and run the `install.sh` again and install to `/dev/mmcblk0` (the eMMC) for a much nicer/faster Arch experience.
 
 ```
 pacman -Syy wget
 wget http://git.io/A3D0 -O install.sh
-sh install.sh "/dev/mmcblk0"
+bash install.sh "/dev/mmcblk0"
 ```
 Regarding the modification of the PKGBUILD for `trousers`:
 
