@@ -33,6 +33,12 @@ bash install.sh "/dev/sda"
 
 After you've made a USB stick and booted from it, you can download and run the `install.sh` again and install to `/dev/mmcblk0` (the eMMC) for a much nicer/faster Arch experience.
 
+Log in as the *root* user which was created during the install process.  Then, select which wifi network to join:
+```
+wifi-menu mlan0
+```
+
+Then, download and run the install script, but this time on the internal storage:
 ```
 pacman -Syy wget
 wget http://git.io/A3D0 -O install.sh
