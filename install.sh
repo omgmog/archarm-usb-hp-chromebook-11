@@ -43,6 +43,7 @@ UBOOTFILE="nv_uboot-spring.kpart.gz"
 GITHUBUSER="omgmog"
 REPOFILES="https://raw.githubusercontent.com/${GITHUBUSER}/archarm-usb-hp-chromebook-11"
 echo "Getting working cgpt binary"
+mkdir -p /usr/local/bin
 wget ${REPOFILES}/master/deps/cgpt --output-document=/usr/local/bin/cgpt
 chmod +x /usr/local/bin/cgpt
 if [ $DEVICE = $EMMC ]; then
@@ -58,7 +59,7 @@ if [ $DEVICE = $EMMC ]; then
     fi
 else
     log "Ensuring the proper paritioning tools are availible"
-    if (which parted); then 
+    if (which parted > /dev/null 2>&1 ); then 
 	echo "parted is installed. Installation can proceed"
     else 
 	echo "parted must be downloaded !"
@@ -69,7 +70,9 @@ else
 fi
 
 log "Creating volumes on ${DEVICE}"
-umount ${DEVICE}* || echo -n
+for mnt in `mount | grep ${DEVICE} | awk '{print $1}';do
+    umount ${mnt}
+done
 parted ${DEVICE} mklabel gpt
 /usr/local/bin/cgpt create -z ${DEVICE}
 /usr/local/bin/cgpt create ${DEVICE}
@@ -92,7 +95,9 @@ else
     log "Looks like you already have ${OSFILE}"
 fi
 log "Installing Arch to ${P3} (this will take a moment...)"
-umount ${DEVICE}*
+for mnt in `mount | grep ${DEVICE} | awk '{print $1}';do
+    umount ${mnt}
+done
 mkdir -p root
 mount -o exec $P3 root
 tar -xf ${OSFILE} -C root
