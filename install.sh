@@ -51,10 +51,13 @@ if [ $DEVICE = $EMMC ]; then
 	rm -f /usr/sbin
     fi
     # for eMMC we need to get some things before we can partition
-    pacman -Syu packer devtools-alarm base-devel git libyaml parted dosfstools parted
+    pacman -Syu --needed packer devtools-alarm base-devel git libyaml parted dosfstools parted
+    pacman -S --needed --noconfirm vboot-utils 
     log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
-    packer -S trousers vboot-utils
-    if [ ! -L /usr/sbin ]; then
+    useradd -c 'Build user' -m build
+    su -c "packer -S trousers" build
+    userdel -r build > /dev/null 2>&1
+    if [ ! -L /usr/sbin ] && [ ! -d /usr/sbin ]; then
 	ln -s /usr/bin /usr/sbin
     fi
 else
@@ -70,7 +73,7 @@ else
 fi
 
 log "Creating volumes on ${DEVICE}"
-for mnt in `mount | grep ${DEVICE} | awk '{print $1}';do
+for mnt in `mount | grep ${DEVICE} | awk '{print $1}'`;do
     umount ${mnt}
 done
 parted ${DEVICE} mklabel gpt
@@ -95,15 +98,17 @@ else
     log "Looks like you already have ${OSFILE}"
 fi
 log "Installing Arch to ${P3} (this will take a moment...)"
-for mnt in `mount | grep ${DEVICE} | awk '{print $1}';do
+for mnt in `mount | grep ${DEVICE} | awk '{print $1}'`;do
     umount ${mnt}
 done
 mkdir -p root
 mount -o exec $P3 root
-tar -xf ${OSFILE} -C root
+tar -xf ${OSFILE} -C root > /dev/null 2>&1
 
 log "Preparing system for chroot"
-cp install.sh root/install.sh
+if [ $DEVICE != $EMMC ]; then
+    cp install.sh root/install.sh
+fi
 rm root/etc/resolv.conf
 cp /etc/resolv.conf root/etc/resolv.conf
 mount -t proc proc root/proc/
@@ -146,7 +151,7 @@ fi
 if [ $DEVICE = $EMMC ]; then
     echo "root=${P3} rootwait rw quiet lsm.module_locking=0" >config.txt
 
-    vbutil_kernel \
+    /usr/sbin/vbutil_kernel \
     --pack arch-eMMC.kpart \
     --keyblock /usr/share/vboot/devkeys/kernel.keyblock \
     --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
