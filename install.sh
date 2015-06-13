@@ -70,6 +70,7 @@ else
 		if [[ $response =~ ^([nN][oO]|[nN])$ ]]; then
 		        dev_option=""
 		fi
+	fi
 	dev_install $dev_option
 	emerge parted
     fi
