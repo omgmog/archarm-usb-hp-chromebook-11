@@ -42,10 +42,6 @@ UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
 UBOOTFILE="nv_uboot-spring.kpart.gz"
 GITHUBUSER="nasufster"
 REPOFILES="https://raw.githubusercontent.com/${GITHUBUSER}/archarm-usb-hp-chromebook-11"
-echo "Getting working cgpt binary"
-mkdir -p /usr/local/bin
-wget ${REPOFILES}/master/deps/cgpt --output-document=/usr/local/bin/cgpt
-chmod +x /usr/local/bin/cgpt
 if [ $DEVICE = $EMMC ]; then
     if [ -L /usr/sbin ]; then
 	rm -f /usr/sbin
@@ -68,7 +64,7 @@ else
 	echo "parted must be downloaded !"
 	log "When prompted to install virtual/target-os-dev press N"
 	dev_option=""
-	if [ ! -d /usr/local/portage]; then
+	if [ -d /usr/local/portage ]; then
 		dev_option="--reinstall"
 		read -r -p "Portage already exists, reinstall? [Y/n] " response
 		if [[ $response =~ ^([nN][oO]|[nN])$ ]]; then
@@ -84,6 +80,12 @@ for mnt in `mount | grep ${DEVICE} | awk '{print $1}'`;do
     umount ${mnt}
 done
 parted ${DEVICE} mklabel gpt
+
+echo "Getting working cgpt binary"
+mkdir -p /usr/local/bin
+wget ${REPOFILES}/master/deps/cgpt --output-document=/usr/local/bin/cgpt
+chmod +x /usr/local/bin/cgpt
+
 /usr/local/bin/cgpt create -z ${DEVICE}
 /usr/local/bin/cgpt create ${DEVICE}
 /usr/local/bin/cgpt add -i 1 -t kernel -b 8192 -s 32768 -l U-Boot -S 1 -T 5 -P 10 ${DEVICE}
