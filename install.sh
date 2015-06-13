@@ -41,7 +41,7 @@ BOOTFILE="boot.scr.uimg"
 UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/${GITHUBBRANCH}/"
 UBOOTFILE="nv_uboot-spring.kpart.gz"
 GITHUBUSER="nasufster"
-GITHUBBRANCH="dwm"
+GITHUBBRANCH="master"
 REPOFILES="https://raw.githubusercontent.com/${GITHUBUSER}/archarm-usb-hp-chromebook-11"
 if [ $DEVICE = $EMMC ]; then
     if [ -L /usr/sbin ]; then
