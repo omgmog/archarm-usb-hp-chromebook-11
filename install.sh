@@ -48,7 +48,7 @@ if [ $DEVICE = $EMMC ]; then
 	rm -f /usr/sbin
     fi
     # for eMMC we need to get some things before we can partition
-    pacman -Syu --needed packer devtools-alarm base-devel git libyaml parted dosfstools parted
+    pacman -Syu --needed packer devtools-alarm base-devel git libyaml parted dosfstools parted wget
     pacman -S --needed --noconfirm vboot-utils 
     log "When prompted to modify PKGBUILD for trousers, set arch to armv7h"
     useradd -c 'Build user' -m build
