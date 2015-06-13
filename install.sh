@@ -67,7 +67,14 @@ else
     else 
 	echo "parted must be downloaded !"
 	log "When prompted to install virtual/target-os-dev press N"
-	dev_install
+	dev_option=""
+	if [ ! -d /usr/local/portage]; then
+		dev_option="--reinstall"
+		read -r -p "Portage already exists, reinstall? [Y/n] " response
+		if [[ $response =~ ^([nN][oO]|[nN])$ ]]; then
+		        dev_option=""
+		fi
+	dev_install $dev_option
 	emerge parted
     fi
 fi
@@ -157,6 +164,7 @@ if [ $DEVICE = $EMMC ]; then
     --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
     --config config.txt \
     --vmlinuz /boot/vmlinux.uimg \
+    --bootloader /boot/boot.src.uimg \
     --arch arm \
     --version 1
 
