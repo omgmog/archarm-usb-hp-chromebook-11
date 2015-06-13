@@ -64,12 +64,12 @@ else
     else 
 	echo "parted must be downloaded !"
 	log "When prompted to install virtual/target-os-dev press N"
-	dev_option="--no"
+	dev_option=""
 	if [ -d /usr/local/portage ]; then
 		dev_option="--reinstall"
 		read -r -p "There was a previous attempt to install portage, reinstall? [Y/n] " response
 		if [[ $response =~ ^([nN][oO]|[nN])$ ]]; then
-		        dev_option="--no"
+		        dev_option=""
 		fi
 	fi
 	dev_install $dev_option
@@ -79,7 +79,7 @@ fi
 
 log "Creating volumes on ${DEVICE}"
 for mnt in `mount | grep ${DEVICE} | awk '{print $1}'`;do
-    umount ${mnt}
+    umount -l ${mnt}
 done
 parted ${DEVICE} mklabel gpt
 
