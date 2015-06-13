@@ -38,9 +38,10 @@ fi
 OSHOST="http://archlinuxarm.org/os/"
 OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
 BOOTFILE="boot.scr.uimg"
-UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
+UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/${GITHUBBRANCH}/"
 UBOOTFILE="nv_uboot-spring.kpart.gz"
 GITHUBUSER="nasufster"
+GITHUBBRANCH="dwm"
 REPOFILES="https://raw.githubusercontent.com/${GITHUBUSER}/archarm-usb-hp-chromebook-11"
 if [ $DEVICE = $EMMC ]; then
     if [ -L /usr/sbin ]; then
@@ -84,7 +85,7 @@ parted ${DEVICE} mklabel gpt
 
 echo "Getting working cgpt binary"
 mkdir -p /usr/local/bin
-wget ${REPOFILES}/master/deps/cgpt --output-document=/usr/local/bin/cgpt
+wget ${REPOFILES}/${GITHUBBRANCH}/deps/cgpt --output-document=/usr/local/bin/cgpt
 chmod +x /usr/local/bin/cgpt
 
 /usr/local/bin/cgpt create -z ${DEVICE}
@@ -126,11 +127,11 @@ mount --rbind /sys root/sys/
 mount --rbind /dev root/dev/
 log "downloading old version of systemd and pacman.conf"
 rm root/etc/pacman.conf
-wget ${REPOFILES}/master/deps/systemd-212-3-armv7h.pkg.tar.xz --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
-wget ${REPOFILES}/master/deps/pacman.conf --output-document=root/etc/pacman.conf
-wget ${REPOFILES}/master/post-install.sh --output-document=root/post-install.sh
+wget ${REPOFILES}/${GITHUBBRANCH}/deps/systemd-212-3-armv7h.pkg.tar.xz --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
+wget ${REPOFILES}/${GITHUBBRANCH}/deps/pacman.conf --output-document=root/etc/pacman.conf
+wget ${REPOFILES}/${GITHUBBRANCH}/post-install.sh --output-document=root/post-install.sh
 log "downloading systemd fix script"
-wget ${REPOFILES}/master/fix-systemd.sh --output-document=root/fix-systemd.sh
+wget ${REPOFILES}/${GITHUBBRANCH}/fix-systemd.sh --output-document=root/fix-systemd.sh
 chmod +x root/fix-systemd.sh
 chroot root/ /bin/bash -c "/fix-systemd.sh"
 
