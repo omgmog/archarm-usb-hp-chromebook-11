@@ -64,12 +64,12 @@ else
     else 
 	echo "parted must be downloaded !"
 	log "When prompted to install virtual/target-os-dev press N"
-	dev_option=""
+	dev_option="--No"
 	if [ -d /usr/local/portage ]; then
 		dev_option="--reinstall"
 		read -r -p "There was a previous attempt to install portage, reinstall? [Y/n] " response
 		if [[ $response =~ ^([nN][oO]|[nN])$ ]]; then
-		        dev_option=""
+		        dev_option="--No"
 		fi
 	fi
 	dev_install $dev_option
