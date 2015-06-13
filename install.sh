@@ -65,7 +65,7 @@ else
 	echo "parted must be downloaded !"
 	log "When prompted to install virtual/target-os-dev press N"
 	dev_option=""
-	if [ -d /usr/local/portage ]; then
+	if !(which portage > /dev/null 2>&1); then
 		dev_option="--reinstall"
 		read -r -p "Portage already exists, reinstall? [Y/n] " response
 		if [[ $response =~ ^([nN][oO]|[nN])$ ]]; then
