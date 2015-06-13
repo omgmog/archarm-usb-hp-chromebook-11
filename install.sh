@@ -168,7 +168,7 @@ if [ $DEVICE = $EMMC ]; then
     --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
     --config config.txt \
     --vmlinuz /boot/vmlinux.uimg \
-    --bootloader /boot/boot.src.uimg \
+    --bootloader /boot/boot.scr.uimg \
     --arch arm \
     --version 1
 
