@@ -159,6 +159,7 @@ if [ $DEVICE != $EMMC ]; then
     cp -r /usr/share/vboot/devkeys/ /tmp/root/usr/share/vboot/
     log "Copying over asound.state"
     alsactl -f /tmp/root/asound.state store
+    cp -r /usr/share/alsa/ucm/* /tmp/root/usr/share/alsa/ucm/
 fi
 
 if [ $DEVICE = $EMMC ]; then
