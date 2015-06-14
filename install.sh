@@ -157,12 +157,15 @@ if [ $DEVICE != $EMMC ]; then
     log "Copying over devkeys (to generate kernel later)"
     mkdir -p /tmp/root/usr/share/vboot/devkeys
     cp -r /usr/share/vboot/devkeys/ /tmp/root/usr/share/vboot/
+    log "Copying over asound.state"
+    alsactl -f /tmp/root/asound.state store
 fi
 
 if [ $DEVICE = $EMMC ]; then
     echo "root=${P3} rootwait rw quiet lsm.module_locking=0" >config.txt
+    cp /etc/asound.state root/etc/asound.state
 
-    /usr/sbin/vbutil_kernel \
+    /usr/sbin/vbutil_kernel 
     --pack arch-eMMC.kpart \
     --keyblock /usr/share/vboot/devkeys/kernel.keyblock \
     --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \

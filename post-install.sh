@@ -11,6 +11,7 @@ pacman -S mesa-libgl mate xorg-server xorg-xinit xorg-server-utils xterm alsa-ut
 pacman -S lightdm lightdm-gtk2-greeter
 systemctl enable lightdm
 echo "exec mate-session" > ~/.xinitrc
+alsactl -F -f /etc/asound.state restore
 
 # Add xorg.conf entries for screen and touchpad
 cd /etc/X11/xorg.conf.d/
