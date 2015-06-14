@@ -167,7 +167,7 @@ if [ $DEVICE = $EMMC ]; then
     echo "root=${P3} rootwait rw quiet lsm.module_locking=0" >config.txt
     cp -r /opt root/opt/
 
-    /usr/sbin/vbutil_kernel 
+    /usr/sbin/vbutil_kernel \
     --pack arch-eMMC.kpart \
     --keyblock /usr/share/vboot/devkeys/kernel.keyblock \
     --signprivate /usr/share/vboot/devkeys/kernel_data_key.vbprivk \
