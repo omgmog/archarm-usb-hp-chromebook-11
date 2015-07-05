@@ -164,7 +164,7 @@ if [ $DEVICE != $EMMC ]; then
 fi
 
 if [ $DEVICE = $EMMC ]; then
-    echo "root=${P3} rootwait rw quiet lsm.module_locking=0" >config.txt
+    echo "root=${P3} rootwait rw lsm.module_locking=0" >config.txt
     cp -r /opt root/opt/
 
     /usr/sbin/vbutil_kernel \
