@@ -36,7 +36,7 @@ else
 fi
 
 OSHOST="http://archlinuxarm.org/os/"
-OSFILE="ArchLinuxARM-chromebook-latest.tar.gz"
+OSFILE="ArchLinuxARM-peach-latest.tar.gz"
 BOOTFILE="boot.scr.uimg"
 UBOOTHOST="https://github.com/jquagga/nv_uboot-spring/raw/master/"
 UBOOTFILE="nv_uboot-spring.kpart.gz"
