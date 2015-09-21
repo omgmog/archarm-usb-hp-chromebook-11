@@ -83,17 +83,20 @@ if [ $DEVICE = $EMMC ]; then
     /usr/local/bin/cgpt add -i 12 -t data -b 73728 -s 32768 -l Script ${DEVICE}
     PARTSIZE=`/usr/local/bin/cgpt show ${DEVICE} | grep 'Sec GPT table' | egrep -o '[0-9]+' | head -n 1`
     /usr/local/bin/cgpt add -i 3 -t data -b 106496 -s `expr ${PARTSIZE} - 106496` -l Root ${DEVICE}
+    
+    partprobe ${DEVICE}
+    mkfs.ext2 $P2
+    mkfs.ext4 $P3
+    mkfs.vfat -F 16 $P12
 else
     # USB uses only 2 partitions
     /usr/local/bin/cgpt add -i 1 -t kernel -b 8192 -s 32768 -l Kernel -S 1 -T 5 -P 10 ${DEVICE}
     PARTSIZE=`/usr/local/bin/cgpt show ${DEVICE} | grep 'Sec GPT table' | egrep -o '[0-9]+' | head -n 1`
     /usr/local/bin/cgpt add -i 2 -t data -b 40960 -s `expr ${PARTSIZE} - 40960` -l Root ${DEVICE}
+    
+    sfdisk -R /dev/sda
+    mkfs.ext4 $P2
 fi
-
-partprobe ${DEVICE}
-mkfs.ext2 $P2
-mkfs.ext4 $P3
-mkfs.vfat -F 16 $P12
 
 cd /tmp
 
@@ -103,7 +106,13 @@ if [ ! -f "${OSFILE}" ]; then
 else
     log "Looks like you already have ${OSFILE}"
 fi
-log "Installing Arch to ${P3} (this will take a moment...)"
+
+if [ $DEVICE = $EMMC ]; then
+    log "Installing Arch to ${P3} (this will take a moment...)"
+else
+    log "Installing Arch to ${P2} (this will take a moment...)"
+fi
+
 for mnt in `mount | grep ${DEVICE} | awk '{print $1}'`;do
     umount ${mnt}
 done
