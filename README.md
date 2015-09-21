@@ -1,3 +1,8 @@
+NOTE
+======
+
+This is a fork of Max Glenister's work for playing around. For latest versions, questions etc. have a look at his repo, solved issues and wiki at https://github.com/omgmog/archarm-usb-hp-chromebook-11
+
 Arch ARM USB installer for the HP Chromebook 11
 ============================
 
