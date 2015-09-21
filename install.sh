@@ -162,19 +162,21 @@ else
 fi
 
 mkdir -p mnt
-if [ $DEVICE != $EMMC ]; then
+if [ $DEVICE = $EMMC ]; then
     mount $P2 mnt
     cp root/boot/vmlinux.uimg mnt
     umount mnt
 else
+    # for usb we only copy the Kernel below and use U-Boot from eMMC
 fi
 
-if [ $DEVICE != $EMMC ]; then
+if [ $DEVICE = $EMMC ]; then
     mount $P12 mnt
     mkdir -p mnt/u-boot
     cp root/boot/boot.scr.uimg mnt/u-boot
     umount mnt
 else
+    # for usb we only copy the Kernel below and use U-Boot from eMMC
 fi
 
 log "Moving CrOS-Tools in place"
