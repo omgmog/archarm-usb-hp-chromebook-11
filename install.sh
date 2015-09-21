@@ -180,8 +180,11 @@ fi
 
 
 log "Moving CrOS-Tools in place"
-cp root/CrOStools/crossystem /usr/bin/crossystem 
-cp root/CrOStools/mosys /usr/sbin/mosys 
+if [ $DEVICE != $EMMC ]; then
+    cp root/CrOStools/crossystem /tmp/root/usr/bin/crossystem 
+    cp root/CrOStools/mosys /tmp/root/usr/sbin/mosys 
+fi
+# TODO: proper location for eMMC-install
 
 if [ $DEVICE != $EMMC ]; then
     log "Copying over devkeys (to generate kernel later)"
