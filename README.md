@@ -1,3 +1,11 @@
+TL;DR:
+======
+
+Use these directions to install to a USB stick, then just load splat.sh (http://git.io/vcNSH) from https://github.com/wamserma/archarm-usb-hp-chromebook-11-starkers and run it to install to eMMC.
+
+You get the default ALARM user accounts. (root/root and alarm/alarm).
+
+
 NOTE
 ======
 
