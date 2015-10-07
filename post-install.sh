@@ -9,6 +9,7 @@ then
 fi
 pacman -S lxde xorg-server xorg-xinit xorg-server-utils xterm alsa-utils xf86-video-fbdev xf86-input-synaptics
 echo "exec startlxde" > ~/.xinitrc
+systemctl enable lxdm.service
 
 # Add xorg.conf entries for screen and touchpad
 cd /etc/X11/xorg.conf.d/
