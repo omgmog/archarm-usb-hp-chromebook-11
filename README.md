@@ -2,6 +2,19 @@ Arch ARM USB installer for the HP Chromebook 11
 ============================
 
 
+## As my script has issues, I recommend using this new script from [starkers](https://github.com/starkers/):
+
+https://github.com/starkers/archbook
+
+This will allow you to install on both USB and eMMC using the latest ArchLinuxARM image.
+
+
+Old steps and README below....
+
+
+===
+
+
 A write-up of the process can be found here: [http://blog.omgmog.net/post/installing-arch-linux-arm-on-the-hp-chromebook-11/](http://blog.omgmog.net/post/installing-arch-linux-arm-on-the-hp-chromebook-11/)
 
 A video of the process can be found here: [http://blog.omgmog.net/post/video-installing-arch-linux-arm-on-the-hp-chromebook-11/](http://blog.omgmog.net/post/video-installing-arch-linux-arm-on-the-hp-chromebook-11/)
