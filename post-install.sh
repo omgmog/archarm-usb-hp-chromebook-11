@@ -20,7 +20,7 @@ wget ${REPOPATH}10-monitor.conf
 wget ${REPOPATH}50-touchpad.conf
 
 # other useful programs/software I use often
-pacman -S screen packer base-devel git gnupg openvpn wicd wicd-gtk
-pacman -S geany libreoffice-fresh firefox mutt
-pacman -S llvm 
+pacman -S screen packer base-devel git gnupg openvpn wicd wicd-gtk mlocate
+pacman -S geany libreoffice-fresh firefox mutt mupdf
+pacman -S llvm r 
 
