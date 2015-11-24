@@ -21,6 +21,6 @@ wget ${REPOPATH}50-touchpad.conf
 
 # other useful programs/software I use often
 pacman -S screen packer base-devel git gnupg openvpn wicd wicd-gtk mlocate cifs-utils
-pacman -S geany libreoffice-fresh firefox mutt mupdf
+pacman -S geany libreoffice-fresh firefox mutt mupdf lynx
 pacman -S llvm r 
 
