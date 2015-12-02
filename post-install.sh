@@ -11,6 +11,8 @@ pacman -S ttf-dejavu lxde xorg-server xorg-xinit xorg-server-utils xterm alsa-ut
 echo "exec startlxde" > ~/.xinitrc
 systemctl enable lxdm.service
 
+echo "run alsamixer as root and unmute all the Speaker-Channels (3 groups of 4 for Left and Right each)"
+
 pacman -S wicd wicd-gtk
 systemctl enable wicd
 
@@ -21,6 +23,6 @@ wget ${REPOPATH}50-touchpad.conf
 
 # other useful programs/software I use often
 pacman -S screen packer base-devel git gnupg openvpn wicd wicd-gtk mlocate cifs-utils
-pacman -S geany libreoffice-fresh firefox mutt mupdf lynx
+pacman -S geany libreoffice-fresh firefox mutt mupdf lynx mpg123
 pacman -S llvm r 
 
