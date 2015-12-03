@@ -16,6 +16,8 @@ echo "run alsamixer as root and unmute all the Speaker-Channels (3 groups of 4 f
 pacman -S wicd wicd-gtk
 systemctl enable wicd
 
+echo "uncomment your domain (e.g. DE) in /etc/conf.d/wireless-regdom"
+
 # Add xorg.conf entries for screen and touchpad
 cd /etc/X11/xorg.conf.d/
 wget ${REPOPATH}10-monitor.conf
