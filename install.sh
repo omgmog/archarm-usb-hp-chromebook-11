@@ -31,8 +31,6 @@ if [ "$DEVICE" = "$EMMC" ]; then
 else
     P1="${DEVICE}1"
     P2="${DEVICE}2"
-    P3="${DEVICE}3"
-    P12="${DEVICE}12"
 fi
 
 OSHOST="http://archlinuxarm.org/os/"
@@ -79,15 +77,26 @@ done
 parted ${DEVICE} mklabel gpt
 /usr/local/bin/cgpt create -z ${DEVICE}
 /usr/local/bin/cgpt create ${DEVICE}
-/usr/local/bin/cgpt add -i 1 -t kernel -b 8192 -s 32768 -l U-Boot -S 1 -T 5 -P 10 ${DEVICE}
-/usr/local/bin/cgpt add -i 2 -t data -b 40960 -s 32768 -l Kernel ${DEVICE}
-/usr/local/bin/cgpt add -i 12 -t data -b 73728 -s 32768 -l Script ${DEVICE}
-PARTSIZE=`/usr/local/bin/cgpt show ${DEVICE} | grep 'Sec GPT table' | egrep -o '[0-9]+' | head -n 1`
-/usr/local/bin/cgpt add -i 3 -t data -b 106496 -s `expr ${PARTSIZE} - 106496` -l Root ${DEVICE}
-partprobe ${DEVICE}
-mkfs.ext2 $P2
-mkfs.ext4 $P3
-mkfs.vfat -F 16 $P12
+if [ $DEVICE = $EMMC ]; then
+    /usr/local/bin/cgpt add -i 1 -t kernel -b 8192 -s 32768 -l U-Boot -S 1 -T 5 -P 10 ${DEVICE}
+    /usr/local/bin/cgpt add -i 2 -t data -b 40960 -s 32768 -l Kernel ${DEVICE}
+    /usr/local/bin/cgpt add -i 12 -t data -b 73728 -s 32768 -l Script ${DEVICE}
+    PARTSIZE=`/usr/local/bin/cgpt show ${DEVICE} | grep 'Sec GPT table' | egrep -o '[0-9]+' | head -n 1`
+    /usr/local/bin/cgpt add -i 3 -t data -b 106496 -s `expr ${PARTSIZE} - 106496` -l Root ${DEVICE}
+    
+    partprobe ${DEVICE}
+    mkfs.ext2 $P2
+    mkfs.ext4 $P3
+    mkfs.vfat -F 16 $P12
+else
+    # USB uses only 2 partitions
+    /usr/local/bin/cgpt add -i 1 -t kernel -b 8192 -s 32768 -l Kernel -S 1 -T 5 -P 10 ${DEVICE}
+    PARTSIZE=`/usr/local/bin/cgpt show ${DEVICE} | grep 'Sec GPT table' | egrep -o '[0-9]+' | head -n 1`
+    /usr/local/bin/cgpt add -i 2 -t data -b 40960 -s `expr ${PARTSIZE} - 40960` -l Root ${DEVICE}
+    
+    sfdisk -R /dev/sda
+    mkfs.ext4 $P2
+fi
 
 cd /tmp
 
@@ -97,32 +106,53 @@ if [ ! -f "${OSFILE}" ]; then
 else
     log "Looks like you already have ${OSFILE}"
 fi
-log "Installing Arch to ${P3} (this will take a moment...)"
+
+if [ $DEVICE = $EMMC ]; then
+    log "Installing Arch to ${P3} (this will take a moment...)"
+else
+    log "Installing Arch to ${P2} (this will take a moment...)"
+fi
+
 for mnt in `mount | grep ${DEVICE} | awk '{print $1}'`;do
     umount ${mnt}
 done
 mkdir -p root
-mount -o exec $P3 root
+if [ $DEVICE = $EMMC ]; then
+    mount -o exec $P3 root
+else
+    mount -o exec $P2 root
+fi
 tar -xf ${OSFILE} -C root > /dev/null 2>&1
+
+log "Copying crossystem and mosys from ChromeOS"
+if [ $DEVICE != $EMMC ]; then
+    mkdir root/CrOStools
+    cp /usr/bin/crossystem root/CrOStools/crossystem
+    cp /usr/sbin/mosys root/CrOStools/mosys
+    cp install.sh root/install.sh
+fi
 
 log "Preparing system for chroot"
 if [ $DEVICE != $EMMC ]; then
     cp install.sh root/install.sh
 fi
-rm root/etc/resolv.conf
-cp /etc/resolv.conf root/etc/resolv.conf
-mount -t proc proc root/proc/
-mount --rbind /sys root/sys/
-mount --rbind /dev root/dev/
-log "downloading old version of systemd and pacman.conf"
-rm root/etc/pacman.conf
-wget ${REPOFILES}/master/deps/systemd-212-3-armv7h.pkg.tar.xz --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
-wget ${REPOFILES}/master/deps/pacman.conf --output-document=root/etc/pacman.conf
-wget ${REPOFILES}/master/post-install.sh --output-document=root/post-install.sh
-log "downloading systemd fix script"
-wget ${REPOFILES}/master/fix-systemd.sh --output-document=root/fix-systemd.sh
-chmod +x root/fix-systemd.sh
-chroot root/ /bin/bash -c "/fix-systemd.sh"
+
+if [ $DEVICE = $EMMC ]; then
+    rm root/etc/resolv.conf
+    cp /etc/resolv.conf root/etc/resolv.conf
+    mount -t proc proc root/proc/
+    mount --rbind /sys root/sys/
+    mount --rbind /dev root/dev/
+    log "downloading old version of systemd and pacman.conf"
+    rm root/etc/pacman.conf
+    wget ${REPOFILES}/master/deps/systemd-212-3-armv7h.pkg.tar.xz --output-document=root/systemd-212-3-armv7h.pkg.tar.xz
+    wget ${REPOFILES}/master/deps/pacman.conf --output-document=root/etc/pacman.conf
+    wget ${REPOFILES}/master/post-install.sh --output-document=root/post-install.sh
+    log "downloading systemd fix script"
+    wget ${REPOFILES}/master/fix-systemd.sh --output-document=root/fix-systemd.sh
+    chmod +x root/fix-systemd.sh
+    chroot root/ /bin/bash -c "/fix-systemd.sh"
+fi
 
 if [ ! -f "root/boot/${BOOTFILE}" ]; then
     log "Downloading ${BOOTFILE}"
@@ -132,15 +162,29 @@ else
 fi
 
 mkdir -p mnt
+if [ $DEVICE = $EMMC ]; then
+    mount $P2 mnt
+    cp root/boot/vmlinux.uimg mnt
+    umount mnt
+fi
+    # for usb we only copy the Kernel below and use U-Boot from eMMC
 
-mount $P2 mnt
-cp root/boot/vmlinux.uimg mnt
-umount mnt
 
-mount $P12 mnt
-mkdir -p mnt/u-boot
-cp root/boot/boot.scr.uimg mnt/u-boot
-umount mnt
+if [ $DEVICE = $EMMC ]; then
+    mount $P12 mnt
+    mkdir -p mnt/u-boot
+    cp root/boot/boot.scr.uimg mnt/u-boot
+    umount mnt
+fi
+    # for usb we only copy the Kernel below and use U-Boot from eMMC
+
+
+log "Moving CrOS-Tools in place"
+if [ $DEVICE != $EMMC ]; then
+    cp root/CrOStools/crossystem /tmp/root/usr/bin/crossystem 
+    cp root/CrOStools/mosys /tmp/root/usr/sbin/mosys 
+fi
+# TODO: proper location for eMMC-install
 
 if [ $DEVICE != $EMMC ]; then
     log "Copying over devkeys (to generate kernel later)"
@@ -166,15 +210,12 @@ if [ $DEVICE = $EMMC ]; then
 
     log "All done! Reboot and press ctrl + D to boot Arch"
 else
-    if [ ! -f "${UBOOTFILE}" ]; then
-        log "Downloading ${UBOOTFILE}"
-        wget ${UBOOTHOST}${UBOOTFILE}
-    else
-        log "Looks like you already have ${UBOOTFILE}"
-    fi
-    gunzip -f ${UBOOTFILE}
-    dd if=nv_uboot-spring.kpart of=$P1
-
+    dd if=root/boot/vmlinux.kpart of=$P1
+    
+    #make sure USB stays enabled for boot
+    crossystem dev_boot_usb=1 dev_boot_signed_only=0
+    
+    umount root
     sync
 
     log "All done! Reboot and press ctrl + U to boot Arch from ${DEVICE}"
